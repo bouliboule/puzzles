@@ -152,7 +152,7 @@ export class Board {
       if (b === BTN.left) b = this.opts.primaryButton();
       this.g = { kind: 'mouse', btn: b, id: e.pointerId };
       this.capture(e);
-      this.send(e.clientX, e.clientY, b);
+      this.send(e.clientX, e.clientY, b | this.mod());
       return;
     }
     this.capture(e);
@@ -180,7 +180,7 @@ export class Board {
   move(e) {
     if (!this.g) return;
     if (this.g.kind === 'mouse') {
-      if (e.pointerId === this.g.id && e.buttons) this.send(e.clientX, e.clientY, DRAG_OF[this.g.btn]);
+      if (e.pointerId === this.g.id && e.buttons) this.send(e.clientX, e.clientY, DRAG_OF[this.g.btn] | this.mod());
       return;
     }
     const p = this.pointers.get(e.pointerId);
@@ -206,7 +206,7 @@ export class Board {
     const g = this.g;
     if (g && g.kind === 'mouse') {
       if (e.pointerId === g.id) {
-        this.send(e.clientX, e.clientY, UP_OF[g.btn]);
+        this.send(e.clientX, e.clientY, UP_OF[g.btn] | this.mod());
         this.g = null;
       }
       return;

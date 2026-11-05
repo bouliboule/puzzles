@@ -351,6 +351,12 @@ EXPORT void pz_timer(double tplus)
 {
     if (timer_active) midend_timer(me, tplus);
 }
+EXPORT const char *pz_key_label(int button)
+{
+    const char *l = midend_current_key_label(me, button);
+    return l ? l : "";
+}
+
 EXPORT int pz_timer_active(void) { return timer_active; }
 
 EXPORT void pz_restart(void) { midend_restart_game(me); }

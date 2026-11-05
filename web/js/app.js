@@ -289,7 +289,15 @@ function buildModes() {
 }
 function updateModes() {
   [...$('modes').children].forEach((b, i) => b.setAttribute('aria-checked', String(i === cur.mode)));
-  $('keypad').classList.toggle('notes', cur.def.keypad && cur.def.modes[cur.mode]?.button === 'right');
+  updateKeypadNotes();
+}
+// Keypad shows notes styling when the selected cell is in pencil mode
+// (the game labels SELECT as "Ink" then), else follows the input mode.
+function updateKeypadNotes() {
+  if (!cur.def.keypad) return;
+  const label = cur.engine.api.keyLabel(BTN.select);
+  const notes = label ? label === 'Ink' : cur.def.modes[cur.mode]?.button === 'right';
+  $('keypad').classList.toggle('notes', notes);
 }
 function primaryButton() {
   const m = cur?.def.modes?.[cur.mode];
@@ -340,6 +348,7 @@ function afterInput(pkr) {
 }
 function updateUI() {
   const e = cur.engine;
+  updateKeypadNotes();
   $('undo').disabled = !e.api.canUndo();
   $('redo').disabled = !e.api.canRedo();
   const z = board.canZoom;

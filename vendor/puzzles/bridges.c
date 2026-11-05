@@ -2119,6 +2119,10 @@ struct game_ui {
     grid_type todraw;
     bool dragging, drag_is_noline;
     int nlines;
+    /* puzzles-pwa: with MOD_STYLUS, a line drag cycles
+     * 0 -> 1 -> ... -> max -> no-line -> 0. */
+    bool drag_cycle;
+    int cycle_op; /* 0 = normal, 1 = lines->no-line, 2 = remove no-line */
 
     int cur_x, cur_y;           /* cursor position */
     bool cur_visible;
@@ -2127,6 +2131,8 @@ struct game_ui {
 
 static char *ui_cancel_drag(game_ui *ui)
 {
+    ui->drag_cycle = false;
+    ui->cycle_op = 0;
     ui->dragx_src = ui->dragy_src = -1;
     ui->dragx_dst = ui->dragy_dst = -1;
     ui->dragging = false;
@@ -2323,8 +2329,19 @@ static char *update_drag_dst(const game_state *state, game_ui *ui,
         gtype = G_LINEH; ntype = G_NOLINEH; mtype = G_MARKH;
         maxb = INDEX(state, maxh, ui->dragx_src+dx, ui->dragy_src+dy);
     }
+    ui->cycle_op = 0;
     if (ui->drag_is_noline) {
         ui->todraw = ntype;
+    } else if (ui->drag_cycle &&
+               (GRID(state, ui->dragx_src+dx, ui->dragy_src+dy) & ntype)) {
+        ui->todraw = 0;
+        ui->cycle_op = 2;
+    } else if (ui->drag_cycle &&
+               (GRID(state, ui->dragx_src+dx, ui->dragy_src+dy) & gtype) &&
+               INDEX(state, lines, ui->dragx_src+dx, ui->dragy_src+dy) == maxb) {
+        ui->todraw = ntype;
+        ui->nlines = 0;
+        ui->cycle_op = 1;
     } else {
         curr = GRID(state, ui->dragx_src+dx, ui->dragy_src+dy);
         currl = INDEX(state, lines, ui->dragx_src+dx, ui->dragy_src+dy);
@@ -2349,7 +2366,9 @@ static char *update_drag_dst(const game_state *state, game_ui *ui,
         if (is->adj.points[i].off == 0) continue;
         curr = GRID(state, is->x+dx, is->y+dy);
         if (curr & mtype) continue; /* don't allow changes to marked lines. */
-        if (ui->drag_is_noline) {
+        if (ui->cycle_op) {
+            /* cycle steps are always allowed */
+        } else if (ui->drag_is_noline) {
             if (curr & gtype) continue; /* no no-line where already a line */
         } else {
             if (POSSIBLES(state, dx, is->x+dx, is->y+dy) == 0) continue; /* no line if !possible. */
@@ -2377,7 +2396,13 @@ static char *finish_drag(const game_state *state, game_ui *ui)
     if (ui->dragx_dst == -1 || ui->dragy_dst == -1)
         return ui_cancel_drag(ui);
 
-    if (ui->drag_is_noline) {
+    if (ui->cycle_op == 1) {
+        sprintf(buf, "L%d,%d,%d,%d,0;N%d,%d,%d,%d",
+                ui->dragx_src, ui->dragy_src,
+                ui->dragx_dst, ui->dragy_dst,
+                ui->dragx_src, ui->dragy_src,
+                ui->dragx_dst, ui->dragy_dst);
+    } else if (ui->drag_is_noline || ui->cycle_op == 2) {
         sprintf(buf, "N%d,%d,%d,%d",
                 ui->dragx_src, ui->dragy_src,
                 ui->dragx_dst, ui->dragy_dst);
@@ -2400,10 +2425,12 @@ static char *interpret_move(const game_state *state, game_ui *ui,
     char buf[80], *ret;
     grid_type ggrid = INGRID(state,gx,gy) ? GRID(state,gx,gy) : 0;
     bool shift = button & MOD_SHFT, control = button & MOD_CTRL;
+    bool stylus = button & MOD_STYLUS;
     button = STRIP_BUTTON_MODIFIERS(button);
 
     if (button == LEFT_BUTTON || button == RIGHT_BUTTON) {
         if (!INGRID(state, gx, gy)) return MOVE_UNUSED;
+        ui->drag_cycle = stylus && button == LEFT_BUTTON;
         ui->cur_visible = false;
         if (ggrid & G_ISLAND) {
             ui->dragx_src = gx;
@@ -3344,7 +3371,7 @@ const struct game thegame = {
     true, false, game_print_size, game_print,
     false,			       /* wants_statusbar */
     false, NULL,                       /* timing_state */
-    REQUIRE_RBUTTON,		       /* flags */
+    REQUIRE_RBUTTON | STYLUS_SUPPORT, /* flags (puzzles-pwa: stylus cycle) */
 };
 
 /* vim: set shiftwidth=4 tabstop=8: */
