@@ -86,6 +86,7 @@ export class Engine {
       wantsStatusbar: c('pz_wants_statusbar', 'number'),
       paramsConfig: c('pz_params_config', 'string', ['string']),
       configParams: c('pz_config_params', 'string', ['string', 'string']),
+      keyLabel: c('pz_key_label', 'string', ['number']),
     };
     M.fe = this;
     this.api.init(1);

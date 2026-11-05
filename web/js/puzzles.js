@@ -15,8 +15,8 @@ export const PUZZLES = {
       <p>Draw a single closed loop along the grid lines. Each number says how many of the four edges around its square are part of the loop.</p>
       <h3>Controls</h3>
       <ul>
-        <li><b>Tap an edge</b> to draw a line. Tap again to mark it with a cross; a third tap clears it.</li>
-        <li><b>Cross mode</b> (or a long press) marks an edge as definitely empty.</li>
+        <li><b>Tap or click an edge</b> to draw a line. Tap again to mark it with a cross; a third tap clears it.</li>
+        <li><b>Long press</b> or <b>right-click</b> an empty edge to cross it directly. Cross mode makes that the default tap.</li>
         <li>Tip: turn on <i>Auto-follow</i> in the puzzle settings to draw whole forced paths with one tap.</li>
       </ul>`,
   },
@@ -24,6 +24,7 @@ export const PUZZLES = {
     title: 'Bridges',
     tagline: 'Connect every island',
     defaultParams: '15x22i30e10m2d2',
+    stylus: true,
     modes: [
       { id: 'bridge', label: 'Bridge', button: 'left' },
       { id: 'block', label: 'Block', button: 'right' },
@@ -33,8 +34,8 @@ export const PUZZLES = {
       <p>Connect all the islands into one network with horizontal and vertical bridges. Each island's number is how many bridges end there. At most two bridges join any pair of islands, and bridges never cross.</p>
       <h3>Controls</h3>
       <ul>
-        <li><b>Drag</b> from one island towards another to add a bridge. Drag again for a double bridge; a third time removes them.</li>
-        <li><b>Block mode</b> (or long press, then drag) marks that no bridge can go between two islands.</li>
+        <li><b>Drag</b> from one island towards another to add a bridge. Drag again for a double bridge, again to block the gap (no bridge allowed), and once more to clear it.</li>
+        <li><b>Long press then drag</b>, <b>right-drag</b>, or Block mode toggles a block directly.</li>
         <li><b>Tap an island</b> to mark it finished (greys it out).</li>
       </ul>`,
   },
@@ -42,6 +43,7 @@ export const PUZZLES = {
     title: 'Keen',
     tagline: 'Arithmetic Latin square',
     defaultParams: '6dn',
+    stylus: true,
     keypad: true,
     // Applied once, before the player has saved their own settings.
     defaultPrefs: { 'Keep mouse highlight after changing a pencil mark': true },
@@ -54,8 +56,8 @@ export const PUZZLES = {
       <p>Fill the grid so every row and column contains each number exactly once. Each outlined cage must produce its target using the given operation (+ − × ÷). Subtraction and division cages have two cells.</p>
       <h3>Controls</h3>
       <ul>
-        <li><b>Tap a cell</b>, then a number on the keypad.</li>
-        <li><b>Notes mode</b> (or long press a cell) to enter pencil marks.</li>
+        <li><b>Tap a cell</b>, then a number on the keypad. Tap the same cell again to switch it to notes (pencil marks); a third tap deselects it.</li>
+        <li><b>Long press</b> or <b>right-click</b> a cell, or use Notes mode, to go straight to notes.</li>
         <li><b>Fill all notes</b> (in the menu) puts every possible number in each empty cell.</li>
       </ul>`,
   },
@@ -63,6 +65,7 @@ export const PUZZLES = {
     title: 'Pattern',
     tagline: 'Nonogram picture logic',
     defaultParams: '20x20',
+    stylus: true,
     modes: [
       { id: 'fill', label: 'Fill', button: 'left' },
       { id: 'dot', label: 'Dot', button: 'right' },
@@ -72,9 +75,9 @@ export const PUZZLES = {
       <p>Shade squares to reveal a picture. The numbers beside each row and above each column list the lengths of the runs of shaded squares in that line, in order.</p>
       <h3>Controls</h3>
       <ul>
-        <li><b>Tap or drag</b> to fill squares. Dragging fills a straight line.</li>
-        <li><b>Dot mode</b> (or long press, then drag) marks squares as definitely empty.</li>
-        <li><b>Clear mode</b> erases squares.</li>
+        <li><b>Tap</b> a square to fill it, again to mark it with a dot (definitely empty), and a third time to clear it.</li>
+        <li><b>Drag</b> applies the first square's next state along a straight line.</li>
+        <li><b>Long press</b> or <b>right-click</b> an empty square to dot it directly. Dot and Clear modes are also available.</li>
       </ul>`,
   },
 };

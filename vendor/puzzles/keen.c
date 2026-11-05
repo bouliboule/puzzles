@@ -1762,6 +1762,7 @@ static char *interpret_move(const game_state *state, game_ui *ui,
     int w = state->par.w;
     int tx, ty;
     char buf[80];
+    bool stylus = button & MOD_STYLUS;
 
     button = STRIP_BUTTON_MODIFIERS(button);
 
@@ -1769,6 +1770,17 @@ static char *interpret_move(const game_state *state, game_ui *ui,
     ty = FROMCOORD(y);
 
     if (tx >= 0 && tx < w && ty >= 0 && ty < w) {
+        /* puzzles-pwa: with MOD_STYLUS, tapping the selected cell
+         * cycles select -> pencil -> deselect. */
+        if (button == LEFT_BUTTON && stylus &&
+            tx == ui->hx && ty == ui->hy && ui->hshow) {
+            if (!ui->hpencil && state->grid[ty*w+tx] == 0)
+                ui->hpencil = true;
+            else
+                ui->hshow = false;
+            ui->hcursor = false;
+            return MOVE_UI_UPDATE;
+        }
         if (button == LEFT_BUTTON) {
 	    if (tx == ui->hx && ty == ui->hy &&
 		ui->hshow && !ui->hpencil) {
@@ -2578,7 +2590,7 @@ const struct game thegame = {
     true, false, game_print_size, game_print,
     false,			       /* wants_statusbar */
     false, NULL,                       /* timing_state */
-    REQUIRE_RBUTTON | REQUIRE_NUMPAD,  /* flags */
+    REQUIRE_RBUTTON | REQUIRE_NUMPAD | STYLUS_SUPPORT, /* flags (puzzles-pwa: stylus cycle) */
 };
 
 #ifdef STANDALONE_SOLVER
