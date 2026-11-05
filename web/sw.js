@@ -2,7 +2,7 @@
 // VERSION is replaced at deploy time; bump it to ship an update.
 const VERSION = 'dev';
 const CACHE = 'puzzles-' + VERSION;
-const PUZZLES = ['bridges', 'keen', 'loopy', 'pattern'];
+const PUZZLES = ['bridges', 'keen', 'loopy', 'pattern', 'pearl', 'slant'];
 const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js', 'js/board.js', 'js/engine.js', 'js/puzzles.js', 'js/gen-worker.js',

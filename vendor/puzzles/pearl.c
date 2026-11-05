@@ -2205,6 +2205,7 @@ static char *interpret_move(const game_state *state, game_ui *ui,
     char tmpbuf[80];
 
     bool shift = button & MOD_SHFT, control = button & MOD_CTRL;
+    bool stylus = button & MOD_STYLUS; /* puzzles-pwa */
     button = STRIP_BUTTON_MODIFIERS(button);
 
     if (IS_MOUSE_DOWN(button)) {
@@ -2342,6 +2343,23 @@ static char *interpret_move(const game_state *state, game_ui *ui,
                 } else {
                     /* Closest to left/right edge. */
                     direction = (x < cx) ? L : R;
+                }
+                /* puzzles-pwa: with MOD_STYLUS, tapping an edge cycles
+                 * empty -> line -> cross -> empty. */
+                if (stylus && button == LEFT_RELEASE) {
+                    int gx2 = gx + DX(direction), gy2 = gy + DY(direction);
+                    int d2 = F(direction);
+                    if (!INGRID(state, gx2, gy2)) return MOVE_UI_UPDATE;
+                    if (state->lines[gy*w+gx] & direction) {
+                        sprintf(tmpbuf, "F%d,%d,%d;F%d,%d,%d;"
+                                "M%d,%d,%d;M%d,%d,%d",
+                                direction, gx, gy, d2, gx2, gy2,
+                                direction, gx, gy, d2, gx2, gy2);
+                        return dupstr(tmpbuf);
+                    }
+                    if (state->marks[gy*w+gx] & direction)
+                        return mark_in_direction(state, gx, gy, direction,
+                                                 false, tmpbuf);
                 }
 		return mark_in_direction(state, gx, gy, direction,
 					 (button == LEFT_RELEASE), tmpbuf);
@@ -2833,7 +2851,7 @@ const struct game thegame = {
     true, false, game_print_size, game_print,
     false,			       /* wants_statusbar */
     false, NULL,                       /* timing_state */
-    0,				       /* flags */
+    STYLUS_SUPPORT,		       /* flags (puzzles-pwa: tap cycle) */
 };
 
 #ifdef STANDALONE_SOAK_TEST
