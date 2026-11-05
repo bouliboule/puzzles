@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "web", "runtimeExecutable": "python3", "runtimeArgs": ["dev-server.py", "8642"], "port": 8642 }
+  ]
+}

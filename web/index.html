@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Puzzles</title>
+  <meta name="description" content="Loopy, Bridges, Keen and Pattern — logic puzzles from Simon Tatham's Portable Puzzle Collection.">
+  <meta name="theme-color" content="#f2f1ed" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1b1d" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Puzzles">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    // Apply the theme before first paint to avoid a flash (important on e-ink).
+    try {
+      var s = JSON.parse(localStorage.getItem('pz:settings') || '{}');
+      var t = s.theme || 'auto';
+      if (t === 'auto') {
+        t = matchMedia('(update: slow), (monochrome)').matches ? 'eink'
+          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = t;
+    } catch (e) { document.documentElement.dataset.theme = 'light'; }
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <!-- Home -->
+  <section id="home" class="view">
+    <header class="bar top">
+      <h1 class="home-title">Puzzles</h1>
+      <button class="icon-btn" id="home-settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>
+      </button>
+    </header>
+    <main class="home-main">
+      <ul id="puzzle-list" class="puzzle-list"></ul>
+      <p class="credit">Puzzles and generators by Simon Tatham's
+        <a href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/" target="_blank" rel="noopener">Portable Puzzle Collection</a> (MIT licence).</p>
+    </main>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="view" hidden>
+    <header class="bar top">
+      <button class="icon-btn" id="back" aria-label="Back to puzzles">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="title-btn" id="title-btn" aria-label="Change puzzle type">
+        <span id="game-title" class="game-title"></span>
+        <span id="game-sub" class="game-sub"></span>
+      </button>
+      <span id="timer" class="timer" aria-live="off"></span>
+      <button class="icon-btn" id="zoom-out" aria-label="Zoom out" hidden>
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5M7.5 10.5h6"/></svg>
+      </button>
+      <button class="icon-btn" id="zoom-in" aria-label="Zoom in" hidden>
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5M7.5 10.5h6M10.5 7.5v6"/></svg>
+      </button>
+      <button class="icon-btn" id="menu-btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" class="fill"/><circle cx="12" cy="12" r="1.6" class="fill"/><circle cx="19" cy="12" r="1.6" class="fill"/></svg>
+      </button>
+    </header>
+    <div id="statusline" class="statusline" hidden></div>
+    <main id="viewport" class="viewport">
+      <canvas id="board"></canvas>
+      <div id="busy" class="busy" hidden><span class="spinner"></span><span id="busy-text">Generating…</span></div>
+      <div id="press-ring" class="press-ring" hidden></div>
+    </main>
+    <div id="banner" class="banner" hidden>
+      <span id="banner-text"></span>
+      <button id="banner-new" class="btn primary">New game</button>
+    </div>
+    <footer class="bar bottom">
+      <div id="keypad" class="keypad" hidden></div>
+      <div class="controls">
+        <div id="modes" class="seg" role="radiogroup" aria-label="Input mode"></div>
+        <span class="spacer"></span>
+        <button class="icon-btn big" id="undo" aria-label="Undo">
+          <svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></svg>
+        </button>
+        <button class="icon-btn big" id="redo" aria-label="Redo">
+          <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 000 11H13"/></svg>
+        </button>
+      </div>
+    </footer>
+  </section>
+
+  <dialog id="sheet" class="sheet">
+    <form method="dialog" class="sheet-inner">
+      <div class="sheet-head">
+        <h2 id="sheet-title"></h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div id="sheet-body" class="sheet-body"></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>
