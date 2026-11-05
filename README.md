@@ -1,8 +1,8 @@
 # Puzzles
 
-A touch-first PWA for four puzzles from [Simon Tatham's Portable Puzzle
+A touch-first PWA for six puzzles from [Simon Tatham's Portable Puzzle
 Collection](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/):
-**Loopy**, **Bridges**, **Keen** and **Pattern**. The original C generators
+**Loopy**, **Bridges**, **Keen**, **Pattern**, **Pearl** and **Slant**. The original C generators
 and solvers are compiled to WebAssembly; the UI is new and designed for
 phones, tablets and e-ink readers.
 
@@ -21,7 +21,8 @@ phones, tablets and e-ink readers.
   Boox or other e-ink device.
 - Game IDs to move a puzzle between devices.
 
-Defaults: Loopy 15×22 Hard, Bridges 15×22 Hard, Keen 6×6 Normal, Pattern 20×20.
+Defaults: Loopy 15×22 Hard, Bridges 15×22 Hard, Keen 6×6 Normal, Pattern 20×20, Pearl 10×10 Tricky,
+Slant 8×8 Hard.
 
 ## Develop
 

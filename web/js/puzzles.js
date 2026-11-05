@@ -80,9 +80,49 @@ export const PUZZLES = {
         <li><b>Long press</b> or <b>right-click</b> an empty square to dot it directly. Dot and Clear modes are also available.</li>
       </ul>`,
   },
+  pearl: {
+    title: 'Pearl',
+    tagline: 'Thread a loop through the pearls',
+    defaultParams: '10x10dt',
+    stylus: true,
+    modes: [
+      { id: 'line', label: 'Line', button: 'left' },
+      { id: 'cross', label: 'Cross', button: 'right' },
+    ],
+    extraMenu: [{ label: 'Hint', key: 'h' }],
+    help: `
+      <p>Draw a single closed loop through cell centres, moving horizontally and vertically. The loop must pass through every pearl.</p>
+      <ul>
+        <li><b>Black pearl:</b> the loop turns on it, and goes straight through the cells on both sides.</li>
+        <li><b>White pearl:</b> the loop goes straight through it, and turns in at least one of the cells either side.</li>
+      </ul>
+      <h3>Controls</h3>
+      <ul>
+        <li><b>Drag</b> across cells to draw the loop; dragging back over a line erases it.</li>
+        <li><b>Tap an edge</b> between two cells to draw a line there, again to cross it, and a third time to clear it.</li>
+        <li><b>Long press</b> or <b>right-click</b> an edge, or use Cross mode, to cross it directly.</li>
+      </ul>`,
+  },
+  slant: {
+    title: 'Slant',
+    tagline: 'Fill every square with a diagonal',
+    defaultParams: '8x8dh',
+    stylus: true,
+    modes: [
+      { id: 'back', label: '╲ first', button: 'left' },
+      { id: 'fwd', label: '╱ first', button: 'right' },
+    ],
+    help: `
+      <p>Draw a diagonal line in every square. Each numbered dot says how many lines meet at it, and the lines must never form a closed loop.</p>
+      <h3>Controls</h3>
+      <ul>
+        <li><b>Tap</b> a square to cycle ╲ → ╱ → blank.</li>
+        <li><b>Long press</b> or <b>right-click</b> cycles the other way (╱ first), as does the ╱ first mode.</li>
+      </ul>`,
+  },
 };
 
-export const ORDER = ['loopy', 'bridges', 'keen', 'pattern'];
+export const ORDER = ['loopy', 'bridges', 'keen', 'pattern', 'pearl', 'slant'];
 
 // Small SVG icons for the home screen. Use currentColor.
 export const ICONS = {
@@ -104,4 +144,16 @@ export const ICONS = {
     ${['0110', '1111', '1001', '0110'].map((row, y) => [...row].map((c, x) => c === '1' ? `<rect x="${14 + x * 8.5}" y="${14 + y * 8.5}" width="7.5" height="7.5"/>` : '').join('')).join('')}
     <g font-size="6" font-family="system-ui, sans-serif" font-weight="600" text-anchor="middle"><text x="18" y="10">1</text><text x="26.5" y="10">3</text><text x="35" y="10">3</text><text x="43.5" y="10">1</text>
     <text x="8" y="21">2</text><text x="8" y="29.5">4</text><text x="8" y="38">1 1</text><text x="8" y="46.5">2</text></g></svg>`,
+  pearl: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 10H38V24H24V38H10Z" stroke-width="3.2"/>
+    <circle cx="10" cy="10" r="5" fill="currentColor" stroke="none"/>
+    <circle cx="24" cy="10" r="5" fill="var(--icon-bg)" stroke-width="2.4"/>
+    <circle cx="10" cy="24" r="5" fill="var(--icon-bg)" stroke-width="2.4"/>
+    <circle cx="24" cy="38" r="5" fill="currentColor" stroke="none"/></svg>`,
+  slant: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round">
+    <rect x="6" y="6" width="36" height="36" stroke-width="1"/>
+    <path d="M18 6V42M30 6V42M6 18H42M6 30H42" stroke-width="0.8"/>
+    <path d="M6 6L18 18M18 6L30 18M42 6L30 18M6 30L18 18M30 18L18 30M30 30L42 18M6 30L18 42M30 30L18 42M30 42L42 30" stroke-width="3"/>
+    <g stroke-width="1.6" fill="var(--icon-bg)"><circle cx="18" cy="18" r="4.5"/><circle cx="30" cy="30" r="4.5"/></g>
+    <g font-size="6.5" font-family="system-ui, sans-serif" font-weight="600" text-anchor="middle" fill="currentColor" stroke="none"><text x="18" y="20.3">3</text><text x="30" y="32.3">2</text></g></svg>`,
 };

@@ -16,6 +16,8 @@
   --c-bridges: #7ad3ff;
   --c-keen: #ff8fb1;
   --c-pattern: #9be37f;
+  --c-pearl: #c3a6ff;
+  --c-slant: #ff9f5a;
   --board-bg: #f5f5f5;
   --radius: 10px;
   --border: 3px;
@@ -55,7 +57,7 @@
   --accent-text: #000000;
   --pop: #000000;
   --pop-text: #ffffff;
-  --c-loopy: #fff; --c-bridges: #fff; --c-keen: #fff; --c-pattern: #fff;
+  --c-loopy: #fff; --c-bridges: #fff; --c-keen: #fff; --c-pattern: #fff; --c-pearl: #fff; --c-slant: #fff;
   --board-bg: #ffffff;
   --off: 3px;
   --weight: 700;
@@ -249,6 +251,8 @@ a { color: inherit; font-weight: 700; text-decoration-thickness: 2px; text-under
 .card[data-name="bridges"] { background: var(--c-bridges); }
 .card[data-name="keen"]    { background: var(--c-keen); }
 .card[data-name="pattern"] { background: var(--c-pattern); }
+.card[data-name="pearl"]   { background: var(--c-pearl); }
+.card[data-name="slant"]   { background: var(--c-slant); }
 :root[data-theme="eink"] .card { color: #000; }
 .card .icon {
   width: 64px; height: 64px; margin-bottom: 10px; padding: 6px;

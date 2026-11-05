@@ -14,7 +14,7 @@ CORE="combi.c divvy.c draw-poly.c drawing.c dsf.c findloop.c grid.c
   version.c hat.c spectre.c"
 CORE_SRC=$(for f in $CORE; do echo "$P/$f"; done)
 
-PUZZLES="${*:-bridges keen loopy pattern}"
+PUZZLES="${*:-bridges keen loopy pattern pearl slant}"
 EXPORTS='["_malloc","_free"]'
 
 for name in $PUZZLES; do
