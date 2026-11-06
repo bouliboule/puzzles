@@ -360,10 +360,19 @@ const char *pz_load(pz *p, const char *data)
 
 void pz_size(pz *p, int w, int h, double dpr, int out[3])
 {
+    pz_size_weighted(p, w, h, dpr, 1.0, out);
+}
+
+void pz_size_weighted(pz *p, int w, int h, double dpr, double weight, int out[3])
+{
+    /* weight > 1 makes each puzzle unit span more device pixels, so the
+     * puzzle is laid out at a smaller tile size and drawn magnified:
+     * fixed-width lines and outlines come out proportionally heavier. */
+    double units = dpr * (weight > 1 ? weight : 1);
     double scale = dpr;
     p->fe_scale = 1;
-    if (dpr >= 2) {
-        p->fe_scale = (int)floor(dpr);
+    if (units >= 2) {
+        p->fe_scale = (int)floor(units);
         scale = dpr / p->fe_scale;
     }
     w = (int)(w * dpr / p->fe_scale);

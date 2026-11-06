@@ -130,9 +130,15 @@ final class Renderer {
         let f = font(Int(size), mono: mono)
         let line = ctLine(s, f, col(c))
         let w = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
-        var xx = CGFloat(x)
-        if align & 0x001 != 0 { xx -= w / 2 } else if align & 0x002 != 0 { xx -= w }
-        var yy = CGFloat(y)
+        // +0.5 like line/circle: puzzle coordinates name pixels, so a circle
+        // "at" x is centred on x + 0.5 and text centred with it must match.
+        var xx = CGFloat(x) + 0.5
+        if align & 0x001 != 0 {
+            // Centre the ink, not the advance width, so digits sit centred.
+            let g = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
+            xx -= g.isEmpty ? w / 2 : g.midX
+        } else if align & 0x002 != 0 { xx -= w }
+        var yy = CGFloat(y) + 0.5
         if align & 0x100 != 0 { yy += midpoint(Int(size), mono: mono, f) }
         cg.saveGState()
         cg.textMatrix = CGAffineTransform(scaleX: 1, y: -1)
@@ -146,7 +152,7 @@ final class Renderer {
         let key = size * 2 + (mono ? 1 : 0)
         if let m = midpoints[key] { return m }
         let b = CTLineGetBoundsWithOptions(ctLine("ABCDEFGHIKLMNOPRSTUVWXYZ0123456789", f, Self.magenta), .useGlyphPathBounds)
-        let m = ((b.minY + b.maxY) / 2).rounded()
+        let m = (b.minY + b.maxY) / 2   // unrounded: a unit can be several pixels
         midpoints[key] = m
         return m
     }

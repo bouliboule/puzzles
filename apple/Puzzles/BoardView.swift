@@ -25,6 +25,13 @@ final class BoardView: PlatformView {
     private let pad: CGFloat = 6
     private let maxTile: CGFloat = 96
     private static let maxPx: CGFloat = 10e6
+    /// Points per puzzle unit. Puzzles draw 1-unit grid lines and outlines,
+    /// which read as hairlines on iPhone/iPad; magnify for a bolder look.
+    #if os(iOS)
+    private static let lineWeight = 2.0
+    #else
+    private static let lineWeight = 1.0
+    #endif
 
     private(set) var engine: Engine?
     private(set) var zoom: CGFloat = 1
@@ -101,7 +108,7 @@ final class BoardView: PlatformView {
         let ah = max(50, (bounds.height - 2 * pad) * zoom)
         var dpr = density
         if aw * ah * dpr * dpr > Self.maxPx { dpr = max(1, sqrt(Self.maxPx / (aw * ah))) }
-        let (w, h, fe) = e.pz.size(Int(aw), Int(ah), dpr: Double(dpr))
+        let (w, h, fe) = e.pz.size(Int(aw), Int(ah), dpr: Double(dpr), weight: Self.lineWeight)
         e.renderer.setSize(w, h, scale: fe)
         dispScale = 1 / dpr
         dispW = CGFloat(w) * dispScale

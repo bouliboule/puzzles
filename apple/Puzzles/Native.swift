@@ -72,9 +72,10 @@ final class PZ {
     func load(_ data: String) -> String { S(pz_load(h, data)) }
 
     /// Returns (bitmap width, bitmap height, feScale).
-    func size(_ w: Int, _ hh: Int, dpr: Double) -> (Int, Int, Int) {
+    /// `weight` > 1 draws each puzzle unit larger, for heavier lines.
+    func size(_ w: Int, _ hh: Int, dpr: Double, weight: Double = 1) -> (Int, Int, Int) {
         var out: [Int32] = [0, 0, 0]
-        pz_size(h, Int32(w), Int32(hh), dpr, &out)
+        pz_size_weighted(h, Int32(w), Int32(hh), dpr, weight, &out)
         return (Int(out[0]), Int(out[1]), Int(out[2]))
     }
 

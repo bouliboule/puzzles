@@ -71,6 +71,8 @@ const char *pz_load(pz *p, const char *data);  /* error or "" */
  * out[0], out[1]: bitmap size in device pixels; out[2]: fe_scale
  * (device pixels per puzzle unit). */
 void pz_size(pz *p, int w, int h, double dpr, int out[3]);
+/* As pz_size, but draws each puzzle unit `weight` times larger (>= 1). */
+void pz_size_weighted(pz *p, int w, int h, double dpr, double weight, int out[3]);
 void pz_redraw(pz *p);
 int pz_tilesize(pz *p);
 int pz_input(pz *p, int x, int y, int button);

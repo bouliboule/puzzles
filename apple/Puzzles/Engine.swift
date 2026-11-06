@@ -71,7 +71,11 @@ final class Engine {
     }
 
     func applyPalette(_ theme: Theme) {
+        #if os(iOS)
+        renderer.bold = true   // matches the heavier iOS line weight
+        #else
         renderer.bold = theme == .eink
+        #endif
         renderer.colours = raw.map { c in
             let m = Self.mapColour(c.count == 3 ? c : [1, 0, 1], theme)
             return CGColor(srgbRed: CGFloat(m[0]), green: CGFloat(m[1]), blue: CGFloat(m[2]), alpha: 1)
