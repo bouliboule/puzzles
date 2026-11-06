@@ -1,0 +1,87 @@
+# XcodeGen spec: `cd apple && xcodegen` writes Puzzles.xcodeproj.
+# One multiplatform target (iPhone, iPad, Mac) sharing the C puzzle code
+# with the Android app through src/native/pz.h.
+name: Puzzles
+options:
+  bundleIdPrefix: io.ricca
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+  groupSortPosition: top
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+
+targets:
+  Puzzles:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: Puzzles
+      - path: ../src/native
+        includes: ["pz.c", "pz.h"]
+        compilerFlags: ["-w", "-O2"]
+      - path: ../vendor/puzzles
+        compilerFlags: ["-w", "-O2"]
+        includes:
+          # core
+          - combi.c
+          - divvy.c
+          - draw-poly.c
+          - drawing.c
+          - dsf.c
+          - findloop.c
+          - grid.c
+          - latin.c
+          - laydomino.c
+          - loopgen.c
+          - malloc.c
+          - matching.c
+          - midend.c
+          - misc.c
+          - penrose.c
+          - penrose-legacy.c
+          - printing.c
+          - ps.c
+          - random.c
+          - sort.c
+          - tdq.c
+          - tree234.c
+          - version.c
+          - hat.c
+          - spectre.c
+          # games (keep in sync with src/native/generated-games.h)
+          - loopy.c
+          - bridges.c
+          - keen.c
+          - pattern.c
+          - pearl.c
+          - slant.c
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.ricca.puzzles
+        PRODUCT_NAME: Puzzles
+        # Simulator and Mac builds need no team: the Mac app is signed
+        # ad hoc. For a device or distribution, set DEVELOPMENT_TEAM
+        # and drop the two [sdk=macosx*] overrides.
+        CODE_SIGN_STYLE: Automatic
+        "CODE_SIGN_IDENTITY[sdk=macosx*]": "-"
+        "CODE_SIGN_STYLE[sdk=macosx*]": Manual
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GCC_PREPROCESSOR_DEFINITIONS: ["$(inherited)", "COMBINED=1"]
+        HEADER_SEARCH_PATHS: ["$(SRCROOT)/../src/native", "$(SRCROOT)/../vendor/puzzles"]
+        SWIFT_OBJC_BRIDGING_HEADER: Puzzles/Bridging.h
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_APP_SANDBOX: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Puzzles
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.puzzle-games
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Puzzle engine © Simon Tatham and contributors (MIT)"
