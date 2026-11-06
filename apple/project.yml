@@ -64,9 +64,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.ricca.puzzles
         PRODUCT_NAME: Puzzles
-        # Simulator and Mac builds need no team: the Mac app is signed
-        # ad hoc. For a device or distribution, set DEVELOPMENT_TEAM
-        # and drop the two [sdk=macosx*] overrides.
+        # Devices sign with the team below; the Mac app is signed ad hoc
+        # (drop the two [sdk=macosx*] overrides to distribute it).
+        DEVELOPMENT_TEAM: PC87Y8WPTG
         CODE_SIGN_STYLE: Automatic
         "CODE_SIGN_IDENTITY[sdk=macosx*]": "-"
         "CODE_SIGN_STYLE[sdk=macosx*]": Manual
