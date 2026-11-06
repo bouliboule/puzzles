@@ -1,3 +1,5 @@
 .DS_Store
 web/wasm/
 .claude/settings.local.json
+apple/build/
+apple/Puzzles.xcodeproj/

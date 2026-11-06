@@ -46,7 +46,7 @@ WebAssembly and publishes `web/` to GitHub Pages (set Pages → Source to
 
 A native app in `android/`: the same C puzzle code built with the NDK
 through `src/native/pz.c` (a handle-based C API meant to be shared with
-a future iOS app), with Kotlin + Jetpack Compose UI and a custom
+the iOS/macOS app), with Kotlin + Jetpack Compose UI and a custom
 `View` for the board.
 
 On a Mac (Apple Silicon is fine):
@@ -64,6 +64,35 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 For Google Play, use `./gradlew bundleRelease` (an `.aab`) with a real
 upload key in `android/keystore.properties` (`storeFile`, `storePassword`,
 `keyAlias`, `keyPassword`).
+
+## iOS, iPadOS and macOS
+
+A native SwiftUI app in `apple/` (one multiplatform target): the same C
+puzzle code through `src/native/pz.h`, drawn with Core Graphics into a
+layer-backed board view. Touch, Apple Pencil, long press, pinch zoom,
+hardware keyboards, and on the Mac right-click, trackpad pinch/scroll
+and a Game menu with shortcuts (⌘N new, ⌘Z/⇧⌘Z undo/redo).
+
+Needs Xcode 16+ and [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+(`brew install xcodegen`); the `.xcodeproj` is generated, not committed.
+
+```sh
+cd apple
+xcodegen                    # writes Puzzles.xcodeproj
+open Puzzles.xcodeproj      # pick an iPhone simulator or "My Mac", then Run
+```
+
+Or from the command line:
+
+```sh
+xcodebuild -project Puzzles.xcodeproj -scheme Puzzles -destination 'platform=macOS' -derivedDataPath build/dd build
+xcodebuild -project Puzzles.xcodeproj -scheme Puzzles -destination 'generic/platform=iOS Simulator' -derivedDataPath build/dd build
+```
+
+Simulator and Mac builds need no Apple team (the Mac app is signed ad
+hoc). To run on a device or ship, set `DEVELOPMENT_TEAM` in
+`apple/project.yml` and remove the two `[sdk=macosx*]` signing overrides.
+`apple/tools/make-icon.swift` regenerates the app icons.
 
 ## Licence
 
