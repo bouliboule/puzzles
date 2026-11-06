@@ -359,7 +359,7 @@ final class BoardView: PlatformView {
                     var b = mask.contains(.secondary) ? Btn.right : Btn.left
                     if b == Btn.left { b = host?.primaryButton() ?? Btn.left }
                     g = Gesture(kind: .mouse, touch: t, p0: p, btn: b, slop: 0)
-                    send(p, b)
+                    send(p, b | mod)
                 } else {
                     g = Gesture(kind: .pending, touch: t, p0: p, btn: host?.primaryButton() ?? Btn.left,
                                 slop: t.type == .pencil ? 4 : 9)
@@ -396,7 +396,7 @@ final class BoardView: PlatformView {
         case .game:
             if touches.contains(gg.touch) { send(gg.touch.location(in: self), Btn.drag(gg.btn) | mod) }
         case .mouse:
-            if touches.contains(gg.touch) { send(gg.touch.location(in: self), Btn.drag(gg.btn)) }
+            if touches.contains(gg.touch) { send(gg.touch.location(in: self), Btn.drag(gg.btn) | mod) }
         case .pinch:
             if touchesDown.count >= 2 {
                 let (m, d) = mid(touchesDown[0], touchesDown[1])
@@ -422,7 +422,7 @@ final class BoardView: PlatformView {
                     send(t.location(in: self), Btn.release(gg.btn) | mod)
                     gg.kind = .done
                 case .mouse where t === gg.touch:
-                    send(t.location(in: self), Btn.release(gg.btn))
+                    send(t.location(in: self), Btn.release(gg.btn) | mod)
                     gg.kind = .done
                 case .pinch:
                     endPinch()
@@ -470,11 +470,11 @@ final class BoardView: PlatformView {
         guard engine != nil else { return }
         window?.makeFirstResponder(self)
         mouseBtn = b
-        send(loc(e), b)
+        send(loc(e), b | mod)
     }
 
-    private func drag(_ e: NSEvent) { if let b = mouseBtn { send(loc(e), Btn.drag(b)) } }
-    private func up(_ e: NSEvent) { if let b = mouseBtn { send(loc(e), Btn.release(b)) }; mouseBtn = nil }
+    private func drag(_ e: NSEvent) { if let b = mouseBtn { send(loc(e), Btn.drag(b) | mod) } }
+    private func up(_ e: NSEvent) { if let b = mouseBtn { send(loc(e), Btn.release(b) | mod) }; mouseBtn = nil }
 
     override func mouseDown(with e: NSEvent) {
         down(e, e.modifierFlags.contains(.control) ? Btn.right : (host?.primaryButton() ?? Btn.left))

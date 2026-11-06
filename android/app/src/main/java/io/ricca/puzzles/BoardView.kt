@@ -320,11 +320,11 @@ class BoardView(context: Context, private val host: BoardHost) : View(context) {
                 }
                 if (b == Btn.LEFT) b = host.primaryButton()
                 g = Gesture(Kind.MOUSE, 0, ev.x, ev.y, b, 0f)
-                send(ev.x, ev.y, b)
+                send(ev.x, ev.y, b or mod())
             }
-            MotionEvent.ACTION_MOVE -> g?.let { if (it.kind == Kind.MOUSE) send(ev.x, ev.y, Btn.drag(it.btn)) }
+            MotionEvent.ACTION_MOVE -> g?.let { if (it.kind == Kind.MOUSE) send(ev.x, ev.y, Btn.drag(it.btn) or mod()) }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                g?.let { if (it.kind == Kind.MOUSE) send(ev.x, ev.y, Btn.up(it.btn)) }
+                g?.let { if (it.kind == Kind.MOUSE) send(ev.x, ev.y, Btn.up(it.btn) or mod()) }
                 g = null
             }
         }
